@@ -1,35 +1,97 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+/**
+ * App principal con routing.
+ */
+
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { AuthProvider } from './features/auth/hooks/useAuth';
+import { ProtectedRoute } from './features/auth/components/ProtectedRoute';
+import { LoginForm } from './features/auth/components/LoginForm';
+import { RegisterForm } from './features/auth/components/RegisterForm';
+import { Layout } from './shared/components/Layout';
+import { DashboardPage } from './features/dashboard/pages/DashboardPage';
+import { ExercisesPage } from './features/exercises/pages/ExercisesPage';
+import { RoutinesPage } from './features/routines/pages/RoutinesPage';
+import { RoutineDetailPage } from './features/routines/pages/RoutineDetailPage';
+import { WorkoutsPage } from './features/workouts/pages/WorkoutsPage';
+import { WorkoutLoggerPage } from './features/workouts/pages/WorkoutLoggerPage';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      <AuthProvider>
+        <Routes>
+          {/* Rutas públicas */}
+          <Route path="/login" element={<LoginForm />} />
+          <Route path="/register" element={<RegisterForm />} />
+
+          {/* Rutas protegidas */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <DashboardPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/exercises"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <ExercisesPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/routines"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <RoutinesPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/routines/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <RoutineDetailPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/workouts"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <WorkoutsPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/workouts/:id"
+            element={
+              <ProtectedRoute>
+                <Layout>
+                  <WorkoutLoggerPage />
+                </Layout>
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Redirect a home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
