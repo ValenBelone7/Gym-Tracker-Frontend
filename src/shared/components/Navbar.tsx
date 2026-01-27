@@ -2,16 +2,34 @@
  * Navbar principal de la aplicación.
  */
 
-import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Link, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Button } from './ui/Button';
 import { useState } from 'react';
 
 export function Navbar() {
-  const { user, logout } = useAuth();
+  const { user, isLoading, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // Mostrar loading mientras se verifica la autenticación
+  if (isLoading) {
+    return (
+      <nav className="bg-white shadow-sm border-b border-gray-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex justify-between h-16 items-center">
+            <div className="text-sm text-gray-500">Cargando...</div>
+          </div>
+        </div>
+      </nav>
+    );
+  }
+
+  // Si no hay usuario, redirigir a login
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
 
   const handleLogout = async () => {
     await logout();
