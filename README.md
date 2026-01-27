@@ -136,8 +136,8 @@ frontend/
 
 ```bash
 # Clonar repositorio
-git clone https://github.com/tu-usuario/gym-tracker.git
-cd gym-tracker/backend
+git clone git@github.com:ValenBelone7/Gym-Tracker-Backend.git
+cd gym-tracker-backend
 
 # Crear entorno virtual
 python -m venv venv
@@ -166,7 +166,9 @@ python manage.py runserver
 ### Frontend
 
 ```bash
-cd frontend
+# Clonar repositorio
+git clone git@github.com:ValenBelone7/Gym-Tracker-Frontend.git
+cd gym-tracker-frontend
 
 # Instalar dependencias
 npm install
