@@ -6,12 +6,29 @@ import { useState, useEffect } from 'react';
 import { useAuth } from '@/features/auth/hooks/useAuth';
 import { Card, CardHeader, CardBody } from '@/shared/components/ui/Card';
 import { Button } from '@/shared/components/ui/Button';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, Navigate } from 'react-router-dom';
 import { workoutsApi } from '@/features/workouts/api/workoutsApi';
 
 export function DashboardPage() {
-  const { user } = useAuth();
+  const { user, isLoading } = useAuth();
   const navigate = useNavigate();
+
+  // Mostrar loading mientras se verifica la autenticación
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="text-center">
+          <div className="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mb-4"></div>
+          <p className="text-gray-600">Cargando...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Si no hay usuario, redirigir a login
+  if (!user) {
+    return <Navigate to="/login" replace />;
+  }
   const [isCreatingWorkout, setIsCreatingWorkout] = useState(false);
   const [stats, setStats] = useState({
     totalWorkouts: 0,

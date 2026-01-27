@@ -25,17 +25,31 @@ function getCsrfToken(): string | null {
   return null;
 }
 
-// Interceptor para agregar el CSRF token a TODAS las peticiones
+// Interceptor para agregar el CSRF token solo si existe
 apiClient.interceptors.request.use((config) => {
-  const csrfToken = getCsrfToken();
-  
-  if (csrfToken) {
-    config.headers['X-CSRFToken'] = csrfToken;
+  // Solo agregar CSRF token en métodos que no sean GET
+  if (config.method && !['get', 'head', 'options'].includes(config.method.toLowerCase())) {
+    const csrfToken = getCsrfToken();
+    
+    if (csrfToken) {
+      config.headers['X-CSRFToken'] = csrfToken;
+    }
   }
   
   return config;
 }, (error) => {
   return Promise.reject(error);
 });
+
+// Interceptor para manejar errores de autenticación
+apiClient.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 403) {
+      console.error('Error 403: CSRF verification failed or not authenticated');
+    }
+    return Promise.reject(error);
+  }
+);
 
 export default apiClient;
